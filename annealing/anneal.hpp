@@ -12,7 +12,7 @@ public:
 			tour.push_back(i);
 		}
 	}
-    void simulateAnnealing(double coolingRate = 0.99, int closed = 1) {
+    void simulate_annealing(double cooling_rate = 0.99, int closed = 1) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distrib(0, plane.size() - 1);
@@ -27,25 +27,26 @@ public:
                     std::swap(tour[i], tour[j]); // отмена изменений, если хуже
                 }
             }
-            temperature *= coolingRate;
+            temperature *= cooling_rate;
+            //displayTour();
         }
 
-        displayTour();
+        display_tour();
     }
 
     double cost(int closed, std::vector<int> atour) {
-        double totalDistance = 0.0;
+        double total_distance = 0.0;
         int size = atour.size();
         for (int k = 0; k < size - 1; ++k) {
-            totalDistance += plane.distance(atour[k], atour[k + 1]);
+            total_distance += plane.distance(atour[k], atour[k + 1]);
         }
         if (closed) {
-            totalDistance += plane.distance(atour.back(), atour.front());
+            total_distance += plane.distance(atour.back(), atour.front());
         }
-        return totalDistance;
+        return total_distance;
     }
 
-    void displayTour() {
+    void display_tour() {
         for (int index : tour) {
             std::cout << index << " -> ";
         }

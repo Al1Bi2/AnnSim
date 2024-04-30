@@ -14,12 +14,16 @@ constexpr coordType PointRadius = 0.002f;
 
 int main()
 {
+	int closed = 1;
 	Plane plane;
-	plane.fillRnd<double>(5);
+	plane.fillRnd<double>(50);
 	plane.display();
-	Anneal anneal(plane);
-	anneal.displayTour();
-	anneal.simulateAnnealing();
-	anneal.displayTour();
+	Anneal anneal(plane,1000);
+	anneal.display_tour();
+	anneal.simulate_annealing(0.99, closed);
+	cout <<"!" << closed << endl;
+
+	cout << "----------------------------------------------------" << closed << endl;
+	
 	return 0;
 }

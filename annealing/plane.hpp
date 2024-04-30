@@ -42,7 +42,7 @@ public:
 
 	int size() const { return points.size(); }
 
-	Point& getPoint(int index) { return points[index]; }
+	Point& get_point(int index) { return points[index]; }
 	void display() {
 		for (Point point : points) {
 			std::cout << "X:" << point.get_x()<< " Y:" << point.get_y()<<std::endl;
