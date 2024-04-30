@@ -27,8 +27,8 @@ public:
 		std::mt19937 gen(rd());
 		
 	
-	std::uniform_real_distribution<T> x_distr(xmin, xmax);
-	std::uniform_real_distribution<T> y_distr(ymin, ymax);
+	std::uniform_real_distribution<T> x_distr(0, 1900);
+	std::uniform_real_distribution<T> y_distr(0, 1050);
 	for (int i = 0; i < quantity; i++) {
 		addPoint(x_distr(gen), y_distr(gen));
 	}
@@ -43,6 +43,7 @@ public:
 	int size() const { return points.size(); }
 
 	Point& get_point(int index) { return points[index]; }
+
 	void display() {
 		for (Point point : points) {
 			std::cout << "X:" << point.get_x()<< " Y:" << point.get_y()<<std::endl;

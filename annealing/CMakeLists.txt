@@ -3,5 +3,5 @@ if (MSVC)
 endif()
 
 set(SOURCE_F anneal.cpp anneal.hpp plane.hpp point.hpp)
-add_library(Anneal  ${SOURCE_F} )
+add_library(Anneal STATIC   ${SOURCE_F} )
 

@@ -5,32 +5,53 @@ class Anneal {
 public:
 	Plane plane;
 	std::vector<int> tour;
-	double temperature;
+	double start_t;
+    double temperature;
+    double end_t;
 public:
-	Anneal(Plane plane, double initialTemp = 1000.0) : plane(plane), temperature(initialTemp) {
+	Anneal(Plane plane, double end_t=0.0001, double initialTemp = 1000.0) : plane(plane), end_t(end_t), start_t(initialTemp) {
 		for (int i = 0; i < plane.size(); i++) {
 			tour.push_back(i);
 		}
 	}
-    void simulate_annealing(double cooling_rate = 0.99, int closed = 1) {
+
+    void simulate_annealing(int num=100000, int closed = 1) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distrib(0, plane.size() - 1);
+        std::uniform_real_distribution<double> prob(0, 1);
+        temperature = start_t;
+        int last_t = 0;
+        for(int k=0;k< num;k++) {
 
-        while (temperature > 1) {
+            temperature =temperature*0.9992;
+
             int i = distrib(gen);
             int j = distrib(gen);
             if (i != j) {
                 std::vector<int> new_tour=tour;
-                std::swap(new_tour[i], new_tour[j]);
+                std::reverse(new_tour.begin() + std::min(i, j), new_tour.begin() + std::max(i, j) + 1);
+                
                 if (cost(closed,tour) > cost(closed, new_tour)) {
-                    std::swap(tour[i], tour[j]); // отмена изменений, если хуже
+                    tour = new_tour;
+                    //last_t = temperature;
+                }
+                else {
+                    double dE = fabs(cost(closed, tour) - cost(closed, new_tour));
+                    double P = exp((-dE) / temperature);
+                    if (prob(gen) < P) {
+                        tour = new_tour;
+                        //last_t = temperature;
+                    }
                 }
             }
-            temperature *= cooling_rate;
+            last_t++;
+            if (temperature < end_t) {
+                break;
+           }
             //displayTour();
         }
-
+        std::cout << "LastEffectiveTemp - "<< last_t << std::endl;
         display_tour();
     }
 

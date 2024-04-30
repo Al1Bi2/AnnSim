@@ -1,35 +1,33 @@
-﻿# CMakeList.txt: проект CMake для SimAnn; включите исходный код и определения,
-# укажите здесь логику для конкретного проекта.
-#
-cmake_minimum_required (VERSION 3.15)
+﻿cmake_minimum_required(VERSION 3.16)
+project(CMakeSFMLProject LANGUAGES CXX)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(SFML_STATIC_LIBRARIES TRUE)
+set(CMAKE_CXX_STANDARD 17)
 
 include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x)
+FetchContent_MakeAvailable(SFML)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
-  
-project ("SimAnn")
-
-include_directories(annealing)
+# Сначала добавляем свою библиотеку
 add_subdirectory(annealing)
 
+message(STATUS ${Anneal_LIBRARIES})
+include_directories(annealing)
 
+# Затем добавляем исполняемый файл
+add_executable(SimAnn src/SimAnn.cpp)
+target_link_libraries(SimAnn PRIVATE sfml-graphics Anneal)
+target_compile_features(SimAnn PRIVATE cxx_std_17)
 
-
-
-# Добавьте источник в исполняемый файл этого проекта.
-add_executable (SimAnn "SimAnn.cpp" "SimAnn.h")
-target_link_libraries(SimAnn PUBLIC Anneal  )
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET SimAnn PROPERTY CXX_STANDARD 17)
+if(WIN32)
+    add_custom_command(
+        TARGET SimAnn
+        COMMENT "Copy OpenAL DLL"
+        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:SimAnn>
+        VERBATIM)
 endif()
 
-
-
 install(TARGETS SimAnn)
-
-# TODO: Добавьте тесты и целевые объекты, если это необходимо.
