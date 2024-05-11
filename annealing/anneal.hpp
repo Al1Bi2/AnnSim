@@ -15,7 +15,7 @@ public:
 		}
 	}
 
-    void simulate_annealing(int num=100000, int closed = 1) {
+    void simulate_annealing(long num=10000000000, int closed = 1) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distrib(0, plane.size() - 1);
@@ -24,7 +24,7 @@ public:
         int last_t = 0;
         for(int k=0;k< num;k++) {
 
-            temperature =temperature*0.9992;
+            temperature =temperature*0.99995;
 
             int i = distrib(gen);
             int j = distrib(gen);
@@ -34,25 +34,26 @@ public:
                 
                 if (cost(closed,tour) > cost(closed, new_tour)) {
                     tour = new_tour;
-                    //last_t = temperature;
+                    last_t = temperature;
                 }
                 else {
                     double dE = fabs(cost(closed, tour) - cost(closed, new_tour));
                     double P = exp((-dE) / temperature);
                     if (prob(gen) < P) {
                         tour = new_tour;
-                        //last_t = temperature;
+                        last_t = temperature;
                     }
                 }
             }
             last_t++;
             if (temperature < end_t) {
+                std::cout << "!!!";
                 break;
            }
             //displayTour();
         }
-        std::cout << "LastEffectiveTemp - "<< last_t << std::endl;
-        display_tour();
+        std::cout << "Cost - "<< cost(closed, tour) << std::endl;
+        //display_tour();
     }
 
     double cost(int closed, std::vector<int> atour) {
