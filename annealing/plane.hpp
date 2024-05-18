@@ -9,11 +9,11 @@
 class Plane {
 public:
 	std::vector<Point> points;
-	coordType xmin = -180 ;
-	coordType xmax = 180 ;
-	coordType ymin = -90 ;
-	coordType ymax = 90;
-	coordType exp = 100000;
+	coordType xmin = 20 ;
+	coordType xmax = 1900 ;
+	coordType ymin = 20 ;
+	coordType ymax = 1050;
+
 
 	void addPoint(coordType x, coordType y) {
 		points.push_back(Point(x, y));
@@ -27,8 +27,8 @@ public:
 		std::mt19937 gen(rd());
 		
 	
-	std::uniform_real_distribution<T> x_distr(0, 1900);
-	std::uniform_real_distribution<T> y_distr(0, 1050);
+	std::uniform_real_distribution<T> x_distr(xmin, xmax);
+	std::uniform_real_distribution<T> y_distr(ymin, ymax);
 	for (int i = 0; i < quantity; i++) {
 		addPoint(x_distr(gen), y_distr(gen));
 	}

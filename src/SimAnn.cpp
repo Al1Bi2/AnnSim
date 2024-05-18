@@ -36,6 +36,9 @@ void drawEdge( Point origin, Point destination, sf::Color color,sf::VertexArray&
 
 void drawPath(sf::RenderTexture& tex, const Anneal& anneal)
 {
+
+
+
     sf::VertexArray path(sf::Lines);
     for (int i=0;i<anneal.tour.size();i++)
     {
@@ -51,9 +54,10 @@ void drawPath(sf::RenderTexture& tex, const Anneal& anneal)
 }
 int main()
 {
+    int n = 100;
     Plane plane;
-    plane.fillRnd<coordType>(200);
-    Anneal anneal(plane,0.00001, 3000);
+    plane.fillRnd<coordType>(n);
+    Anneal anneal(plane,0.00001, n*15);
     float fps;
     sf::Clock clock = sf::Clock::Clock();
     sf::Time previousTime = clock.getElapsedTime();
@@ -90,12 +94,47 @@ int main()
                     cout << (currentTime.asSeconds() - previousTime.asSeconds())<<"S" << endl;
 
                 }
+                if (event.key.code == sf::Keyboard::Key::C)
+                {
+                
+                    cout << "Enter points quantity" << endl;
+                    
+                    cin >> n;
+
+
+                }
+                if (event.key.code == sf::Keyboard::Key::M)
+                {
+                
+                    cout << "MANUAL INPUT" << endl;
+                    cout << "Enter points quantity" << endl;
+                    cin >> n;
+                    plane.clear();
+                    double x, y;
+                    for(int i=0;i<n;i++)
+                    {
+                        cout << "point-" << i+1<< endl;
+                        cin >> x >> y;
+                        plane.addPoint(x, y);
+                       
+                    }
+                    anneal = Anneal(plane, 0.00001, n * 15);
+                    bgTex.clear();
+                    drawPath(bgTex, anneal);
+                    drawPoints(bgTex, anneal.plane);
+                    bgTex.display(); // important !
+                    sf::Sprite background(bgTex.getTexture());
+                    window.clear(sf::Color::Black);
+                    window.draw(background);
+
+
+                }
                 if (event.key.code == sf::Keyboard::Key::N)
                 {
                     plane.clear();
-                    plane.fillRnd<coordType>(200);
+                    plane.fillRnd<coordType>(n);
                     //plane.display();
-                    anneal = Anneal(plane, 0.000001, 3000);
+                    anneal = Anneal(plane, 0.00001, n*15);
                     //anneal.display_tour();
                     bgTex.clear();
                     drawPath(bgTex, anneal);
